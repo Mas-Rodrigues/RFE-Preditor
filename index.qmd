@@ -13,9 +13,9 @@ title-block-banner: false
 
 ```{r}
 # Packages
-library(tidyverse)
 library(dotenv)
-library(tidymodels)
+library(googlesheets4)
+library(DT)
 
 # Load environment variables
 load_dot_env(".env")
@@ -62,7 +62,7 @@ A Matriz de Correlação abaixo foi confeccionada com a finalidade de evidenciar
 ```{r, fig.width=9, fig.height=7}
 # Matriz de correlação
 cor_mat <- data |>
-  select(where(is.numeric)) |>
+  dplyr::select(where(is.numeric)) |>
   corrr::correlate()
 
 # DT::datatable(cor_mat)
