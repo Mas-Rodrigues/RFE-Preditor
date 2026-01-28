@@ -104,10 +104,8 @@ RFE-Preditor/
 
 ## 👨‍⚕️ Autor
 
-**Marco Rodrigues**  
-Fisioterapeuta | Especialista em Reabilitação Cardiopulmonar
-
-📧 Email: masrodrigues317@gmail.com  
+**Marco Rodrigues**
+  
 🔗 GitHub: [@Mas-Rodrigues](https://github.com/Mas-Rodrigues)
 
 ## 📄 Licença
