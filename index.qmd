@@ -1,0 +1,120 @@
+---
+title: "Espessura do Reto Femoral como Preditor da Capacidade Funcional: Uma Análise de Regressão em Pacientes Sob Reabilitação"
+author: "Marco Rodrigues"
+date: today
+date-format: "DD [de] MMMM [de] YYYY"
+categories: [análise]
+lang: pt-br
+echo: false
+warning: false
+message: false
+title-block-banner: false
+---
+
+```{r}
+# Packages
+library(tidyverse)
+library(dotenv)
+library(tidymodels)
+
+# Load environment variables
+load_dot_env(".env")
+
+# Google Sheets authentication
+URL <- Sys.getenv("SHEET_URL")
+
+# Authentication
+googlesheets4::gs4_auth(email = Sys.getenv("EMAIL"))
+
+# Read data from Google Sheets
+data <- googlesheets4::read_sheet(URL, skip = 2)
+```
+
+
+# Metodologia
+
+<br>
+A coleta de dados seguiu um protocolo transversal para avaliar a relação entre morfometria muscular, percepção de sintomas e capacidade funcional.
+
+- **Avaliação Morfométrica**: A espessura do músculo Reto Femoral (RFE) foi mensurada via ultrassonografia em repouso, utilizando a média de três medidas no ponto médio entre a espinha ilíaca anterossuperior e a borda superior da patela.
+
+- **Qualidade de Vida**: Aplicou-se o questionário Minnesota Living with Heart Failure Questionnaire (MLHFQ), onde escores maiores indicam pior qualidade de vida.
+
+- **Capacidade Funcional**: A variável dependente (MARCHA) foi obtida através da distância percorrida (em metros).
+
+- **Monitorização Hemodinâmica**: Foram registrados a Frequência Cardíaca (FC) e a Saturação Periférica de Oxigênio ($SPO_2$) em repouso e imediatamente após o esforço.
+<br>
+
+## Tabela de dados
+
+No período de **`r min(data$DATA)`** a **`r max(data$DATA)`**, foram realizados **`r nrow(data)`** registros de acompanhamento de reabilitação cardiopulmonar, cujas métricas (variáveis) estão evidenciadas na tabela abaixo:
+<br>
+
+```{r}
+DT::datatable(data)
+```
+
+## Matriz de Correlação
+<br>
+A Matriz de Correlação abaixo foi confeccionada com a finalidade de evidenciar possíveis relações entre as variáveis coletada na pesquisa:
+<br>
+
+```{r, fig.width=9, fig.height=7}
+# Matriz de correlação
+cor_mat <- data |>
+  select(where(is.numeric)) |>
+  corrr::correlate()
+
+# DT::datatable(cor_mat)
+
+# Matriz de calor (heatmap)
+cor_stretch <- cor_mat |>
+  corrr::stretch()
+
+print(
+  ggplot(cor_stretch, aes(x = x, y = y, fill = r)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0) +
+    labs(title = "Matriz de calor das correlações", x = "", y = "") +
+    theme_minimal()
+)
+```
+
+
+# Análise Estatística
+
+Os dados foram analisados através de modelos de regressão linear múltipla e simples para identificar os principais preditores da capacidade funcional, mensurada pela distância percorrida na MARCHA.
+
+## Análise dos Preditores Funcionais
+
+A análise inicial considerou a influência da qualidade de vida (Minnesota) e de variáveis fisiológicas (SPO2 final). No entanto, o modelo de regressão linear múltipla revelou que a percepção subjetiva de sintomas (Minnesota: $p = 0,67$) e a oxigenação terminal (SPO2: $p = 0,23$) não apresentaram significância estatística como preditores independentes da performance motora nesta amostra.
+
+## O Papel da Espessura do Reto Femoral (RFE)
+
+O modelo final, mais parcimonioso e com melhor ajuste ($R^2_{adj} = 0,45$; $p < 0,01$), isolou a espessura do reto femoral como o preditor mestre da capacidade funcional.
+
+- **Significância Estatística**: A variável RFE apresentou um forte valor preditivo ($p = 0,009$), indicando uma relação sólida entre a massa muscular periférica e a mobilidade.
+
+- **Magnitude do Efeito**: O coeficiente de regressão ($\beta = 221,59$) sugere que, para cada aumento de 0,1 cm na espessura do músculo reto femoral, projeta-se um ganho clínico de aproximadamente 22 metros na distância de marcha.
+
+```{r}
+model1 <- lm(MARCHA ~ `RFE (espessura)`, data = data)
+summary(model1)
+```
+
+# Implicações Clínicas para a Fisioterapia
+Estes achados reforçam a hipótese de que a limitação funcional nesta coorte é de origem periférica (muscular) em vez de puramente ventilatória ou baseada apenas na percepção de sintomas. A ausência de correlação significativa com o score de Minnesota sugere um hiato entre a percepção subjetiva do paciente e sua real reserva de força.
+
+# Conclusão do Relatório 
+
+**As estratégias de reabilitação devem priorizar o treinamento de força e hipertrofia de membros inferiores**. A monitorização da espessura muscular via ultrassonografia à beira-leito (POCUS) demonstra ser um biomarcador sensível e fidedigno para acompanhar a evolução funcional e guiar a progressão de carga no plano terapêutico.
+
+# Limitações do Estudo
+
+Embora os resultados apresentem significância estatística para a variável muscular, este relatório deve ser interpretado considerando as seguintes limitações:
+
+- **Tamanho Amostral**: O "n = 12" limita a generalização dos achados (poder estatístico reduzido para detectar efeitos menores de variáveis como o Minnesota).
+
+- **Natureza Observacional**: Por ser um corte transversal, os dados estabelecem associação e predição, mas não causalidade direta.
+
+- **Variabilidade Individual**: Fatores como comorbidades específicas e nível de atividade física prévia não foram controlados no modelo de regressão atual.
