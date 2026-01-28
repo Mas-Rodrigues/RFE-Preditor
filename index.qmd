@@ -13,12 +13,15 @@ title-block-banner: false
 
 ```{r}
 # Packages
+library(dplyr)
+library(ggplot2)
+library(corrr)
 library(dotenv)
 library(googlesheets4)
 library(DT)
 
 # Load environment variables
-load_dot_env(".env")
+dotenv::load_dot_env(".env")
 
 # Google Sheets authentication
 URL <- Sys.getenv("SHEET_URL")
@@ -47,7 +50,7 @@ A coleta de dados seguiu um protocolo transversal para avaliar a relação entre
 
 ## Tabela de dados
 
-No período de **`r min(data$DATA)`** a **`r max(data$DATA)`**, foram realizados **`r nrow(data)`** registros de acompanhamento de reabilitação cardiopulmonar, cujas métricas (variáveis) estão evidenciadas na tabela abaixo:
+No período de **`r base::min(data$DATA)`** a **`r base::max(data$DATA)`**, foram realizados **`r base::nrow(data)`** registros de acompanhamento de reabilitação cardiopulmonar, cujas métricas (variáveis) estão evidenciadas na tabela abaixo:
 <br>
 
 ```{r}
@@ -71,12 +74,17 @@ cor_mat <- data |>
 cor_stretch <- cor_mat |>
   corrr::stretch()
 
-print(
-  ggplot(cor_stretch, aes(x = x, y = y, fill = r)) +
-    geom_tile() +
-    scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0) +
-    labs(title = "Matriz de calor das correlações", x = "", y = "") +
-    theme_minimal()
+base::print(
+  ggplot2::ggplot(
+    cor_stretch, 
+    ggplot2::aes(x = x, y = y, fill = r)) +
+    ggplot2::geom_tile() +
+    ggplot2::scale_fill_gradient2(
+      low = "blue", high = "red", 
+      mid = "white", midpoint = 0
+    ) +
+    ggplot2::labs(title = "Matriz de calor das correlações", x = "", y = "") +
+    ggplot2::theme_minimal()
 )
 ```
 
@@ -99,8 +107,8 @@ O modelo final, mais parcimonioso e com melhor ajuste ($R^2_{adj} = 0,45$; $p < 
 
 ## Regressão Linear
 ```{r}
-model1 <- lm(MARCHA ~ `RFE (espessura)`, data = data)
-summary(model1)
+model1 <- stats::lm(MARCHA ~ `RFE (espessura)`, data = data)
+base::summary(model1)
 ```
 
 # Implicações Clínicas para a Fisioterapia
