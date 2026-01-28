@@ -97,6 +97,7 @@ O modelo final, mais parcimonioso e com melhor ajuste ($R^2_{adj} = 0,45$; $p < 
 
 - **Magnitude do Efeito**: O coeficiente de regressão ($\beta = 221,59$) sugere que, para cada aumento de 0,1 cm na espessura do músculo reto femoral, projeta-se um ganho clínico de aproximadamente 22 metros na distância de marcha.
 
+## Regressão Linear
 ```{r}
 model1 <- lm(MARCHA ~ `RFE (espessura)`, data = data)
 summary(model1)

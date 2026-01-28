@@ -19,7 +19,7 @@
 *.tsv
 
 # Diretórios de saída e cache
-index_files/
+# index_files/  # Necessário para GitHub Pages
 *_cache/
 .cache/
 __pycache__/
