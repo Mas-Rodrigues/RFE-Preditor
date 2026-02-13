@@ -126,6 +126,13 @@ O modelo final, mais parcimonioso e com melhor ajuste ($R^2_{adj} = 0,45$; $p < 
 - **Magnitude do Efeito**: O coeficiente de regressão ($\beta = 221,59$) sugere que, para cada aumento de 0,1 cm na espessura do músculo reto femoral, projeta-se um ganho clínico de aproximadamente 22 metros na distância de marcha.
 
 ## Regressão Linear
+
+Na regressão linear simples, **a espessura do reto femoral (RFE) mostrou associação positiva e estatisticamente significativa com a distância de marcha** (β = 221,59; p = 0,0096). 
+Em termos práticos, maior espessura muscular esteve relacionada a melhor capacidade funcional: *para cada aumento de 0,1 unidade de espessura, estima-se ganho médio de aproximadamente 22 metros na marcha*. 
+O modelo apresentou bom ajuste para esta amostra, explicando cerca de 50,5% da variação da distância percorrida (R² = 0,505; R² ajustado = 0,456), com significância global (F(1,10) = 10,22; p = 0,0095). 
+O erro padrão residual foi de 19,54 metros, indicando a variabilidade esperada entre valores observados e previstos. 
+Entretanto, o intercepto não foi significativo (p = 0,434) e sua interpretação clínica isolada é limitada.
+
 ```{r}
 model1 <- stats::lm(MARCHA ~ `RFE (espessura)`, data = data)
 base::summary(model1)
