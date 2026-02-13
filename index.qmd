@@ -72,18 +72,29 @@ cor_mat <- data |>
 
 # Matriz de calor (heatmap)
 cor_stretch <- cor_mat |>
-  corrr::stretch()
+  corrr::stretch() |>
+  dplyr::mutate(r2 = r^2)
 
 base::print(
   ggplot2::ggplot(
     cor_stretch, 
     ggplot2::aes(x = x, y = y, fill = r)) +
     ggplot2::geom_tile() +
+    ggplot2::geom_text(
+      ggplot2::aes(
+        label = sprintf("%.2f", r2)
+      ), 
+      size = 3) +
     ggplot2::scale_fill_gradient2(
       low = "blue", high = "red", 
       mid = "white", midpoint = 0
     ) +
-    ggplot2::labs(title = "Matriz de calor das correlações", x = "", y = "") +
+    ggplot2::labs(
+      title = "Matriz de calor das correlações", 
+      subtitle = "Cores representam o coeficiente de correlação (r); valores nas células representam R²",
+      x = "", 
+      y = ""
+    ) +
     ggplot2::theme_minimal()
 )
 ```
