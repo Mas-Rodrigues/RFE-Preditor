@@ -59,11 +59,15 @@ DT::datatable(data)
 
 ## Matriz de Correlação
 <br>
-A Matriz de Correlação abaixo foi confeccionada com a finalidade de evidenciar possíveis relações entre as variáveis coletada na pesquisa:
+A Matriz de Correlação abaixo foi confeccionada com a finalidade de evidenciar possíveis relações entre as variáveis coletadas na pesquisa:
 <br>
 
 ```{r, fig.width=9, fig.height=7}
 # Matriz de correlação
+numeric_vars <- data |>
+  dplyr::select(where(is.numeric)) |>
+  names()
+
 cor_mat <- data |>
   dplyr::select(where(is.numeric)) |>
   corrr::correlate()
@@ -73,7 +77,12 @@ cor_mat <- data |>
 # Matriz de calor (heatmap)
 cor_stretch <- cor_mat |>
   corrr::stretch() |>
-  dplyr::mutate(r2 = r^2)
+  dplyr::mutate(
+    x = factor(x, levels = numeric_vars),
+    y = factor(y, levels = numeric_vars),
+    r2 = r^2
+  ) |>
+  dplyr::filter(as.integer(x) >= as.integer(y))
 
 base::print(
   ggplot2::ggplot(
